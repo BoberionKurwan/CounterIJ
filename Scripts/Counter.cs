@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,9 +6,17 @@ using UnityEngine.UI;
 public class Counter : MonoBehaviour
 {
     [SerializeField] private Text _counterText;
+
+    private CounterDisplay _display;
+    private Coroutine _counting;
+    private event Action<int> _OnCounterChange;
     private int _count = 0;
     private bool _isCounting = false;
-    private Coroutine countingCoroutine;
+
+    private void Start()
+    {
+        _OnCounterChange += _display.UpdateDisplay;
+    }
 
     private void Update()
     {
@@ -23,33 +32,24 @@ public class Counter : MonoBehaviour
 
         if (_isCounting)
         {
-            countingCoroutine = StartCoroutine(CountEveryHalfSecond());
+            _counting = StartCoroutine(CountEveryHalfSecond());
         }
         else
         {
-            if (countingCoroutine != null)
-            {
-                StopCoroutine(countingCoroutine);
-            }
+            StopCoroutine(_counting);
         }
-    }
-
-    private void UpdateCounterDisplay()
-    {
-        if (_counterText != null)
-        {
-            _counterText.text = "Count: " + _count;
-        }
-
     }
 
     private IEnumerator CountEveryHalfSecond()
     {
-        while (true)
+        float delay = 0.5f;
+        WaitForSeconds waitForSceonds = new WaitForSeconds(delay);
+
+        while (enabled)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return waitForSceonds;
             _count++;
-            UpdateCounterDisplay();
+            _OnCounterChange?.Invoke(_count);
         }
     }
 }
