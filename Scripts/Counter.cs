@@ -1,34 +1,31 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Counter : MonoBehaviour
 {
-    [SerializeField] private Text _counterText;
+    [SerializeField] private Button _button;
 
-    private CounterDisplay _display;
     private Coroutine _counting;
-    private event Action<int> _OnCounterChange;
+    private ButtonDisplay _buttonDisplay;
+    private CounterDisplay _counterDisplay;
+
     private int _count = 0;
     private bool _isCounting = false;
 
-    private void Start()
+    private void Awake()
     {
-        _OnCounterChange += _display.UpdateDisplay;
-    }
-
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            ToggleCounting();
-        }
+        _buttonDisplay = _button.GetComponent<ButtonDisplay>();
+        _counterDisplay = GetComponent<CounterDisplay>();
+        _button.onClick.AddListener(ToggleCounting);
+        UpdateCounterText();
+        UpdateButtonState();
     }
 
     private void ToggleCounting()
     {
         _isCounting = !_isCounting;
+        UpdateButtonState();
 
         if (_isCounting)
         {
@@ -40,16 +37,26 @@ public class Counter : MonoBehaviour
         }
     }
 
+    private void UpdateButtonState()
+    {
+        _buttonDisplay.SetButtonState(_isCounting);
+    }
+
+    private void UpdateCounterText()
+    {
+        _counterDisplay.SetCounterText(_count);
+    }
+
     private IEnumerator CountEveryHalfSecond()
     {
         float delay = 0.5f;
-        WaitForSeconds waitForSceonds = new WaitForSeconds(delay);
+        WaitForSeconds waitForSeconds = new WaitForSeconds(delay);
 
         while (enabled)
         {
-            yield return waitForSceonds;
+            yield return waitForSeconds;
             _count++;
-            _OnCounterChange?.Invoke(_count);
+            UpdateCounterText();
         }
     }
 }

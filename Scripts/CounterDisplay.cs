@@ -3,10 +3,10 @@ using UnityEngine.UI;
 
 public class CounterDisplay : MonoBehaviour
 {
-    private Text _countText;
+    [SerializeField] private Text _counterText;
 
-    public void UpdateDisplay(int count)
+    public void SetCounterText(int count)
     {
-        _countText.text = "Count: " + count;
+        _counterText.text = $"Count : {count}";
     }
 }
