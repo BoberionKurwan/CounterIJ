@@ -14,6 +14,11 @@ public class CounterDisplay : MonoBehaviour
         UpdateCounterText(_initialCount);
     }
 
+    private void OnDestroy()
+    {
+        _counter.OnCountChanged -= UpdateCounterText;
+    }
+
     private void UpdateCounterText(int count)
     {
         _counterText.text = $"Count : {count}";

@@ -12,7 +12,6 @@ public class Counter : MonoBehaviour
     private bool _isCounting = false;
 
     public event Action<int> OnCountChanged;
-    public event Action<bool> OnCountingStateChanged;
 
     private void Update()
     {
@@ -25,7 +24,6 @@ public class Counter : MonoBehaviour
     private void ToggleCounting()
     {
         _isCounting = !_isCounting;
-        OnCountingStateChanged?.Invoke(_isCounting);
 
         if (_isCounting)
             _counting = StartCoroutine(CountProcess());
