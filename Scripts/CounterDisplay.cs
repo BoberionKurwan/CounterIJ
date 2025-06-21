@@ -6,17 +6,15 @@ public class CounterDisplay : MonoBehaviour
     [SerializeField] private Counter _counter;
     [SerializeField] private Text _counterText;
 
-    private int _initialCount = 0;
-
     private void Awake()
     {
-        _counter.OnCountChanged += UpdateCounterText;
-        UpdateCounterText(_initialCount);
+        _counter.CountChanged += UpdateCounterText;
+        UpdateCounterText(_counter.GetCurrentCount());
     }
 
     private void OnDestroy()
     {
-        _counter.OnCountChanged -= UpdateCounterText;
+        _counter.CountChanged -= UpdateCounterText;
     }
 
     private void UpdateCounterText(int count)
